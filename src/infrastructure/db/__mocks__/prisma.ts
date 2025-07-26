@@ -1,8 +1,7 @@
-const mockFindMany = jest.fn();
-
 export const prisma = {
   movie: {
-    findMany: mockFindMany,
+    findMany: jest.fn(),
+    findUnique: jest.fn(),
   },
 };
 

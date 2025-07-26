@@ -126,3 +126,51 @@ describe("searchMoviesInDb", () => {
     );
   });
 });
+
+describe("getMovieById", () => {
+  const { prisma } = require("../db/__mocks__/prisma.ts");
+  const repo = new MovieRepository(prisma);
+
+  const mockMovie = {
+    id: 1,
+    title: "Mock Movie",
+    releaseDate: new Date("2020-01-01"),
+    posterUrl: "http://example.com/poster.jpg",
+    fullPosterUrl: "http://example.com/full-poster.jpg",
+    overview: "A test movie",
+    rating: 8.5,
+    runtime: 120,
+    language: "en",
+    genres: [{ genre: { name: "Action" } }],
+  };
+
+  beforeEach(() => {
+    prisma.movie.findUnique.mockReset();
+  });
+
+  it("should return a Movie instance when found", async () => {
+    prisma.movie.findUnique.mockResolvedValue(mockMovie);
+
+    const result = await repo.getMovieById(1);
+
+    expect(prisma.movie.findUnique).toHaveBeenCalledWith({
+      where: { id: 1 },
+      include: { genres: { include: { genre: true } } },
+    });
+
+    expect(result).toBeInstanceOf(Movie);
+    expect(result?.title).toBe("Mock Movie");
+    expect(result?.genres).toContain("Action");
+  });
+
+  it("should return null if movie not found", async () => {
+    prisma.movie.findUnique.mockResolvedValue(null);
+
+    const result = await repo.getMovieById(9999);
+
+    expect(prisma.movie.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 9999 } })
+    );
+    expect(result).toBeNull();
+  });
+});

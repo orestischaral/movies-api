@@ -87,4 +87,31 @@ export default class MovieRepository implements IMovieRepository {
         })
     );
   }
+
+  async getMovieById(id: number): Promise<Movie | null> {
+    const m = await this.prisma.movie.findUnique({
+      where: { id },
+      include: {
+        genres: {
+          include: {
+            genre: true,
+          },
+        },
+      },
+    });
+
+    if (!m) return null;
+
+    return new Movie(m.id, {
+      title: m.title,
+      releaseDate: m.releaseDate,
+      posterUrl: m.posterUrl,
+      fullPosterUrl: m.fullPosterUrl,
+      overview: m.overview,
+      rating: m.rating,
+      runtime: m.runtime,
+      language: m.language,
+      genres: m.genres.map((g: any) => g.genre.name),
+    });
+  }
 }
