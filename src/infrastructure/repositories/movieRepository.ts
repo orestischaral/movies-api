@@ -56,7 +56,6 @@ export default class MovieRepository implements IMovieRepository {
         },
       };
     }
-    console.log(yearFilter);
     if (yearFilter) {
       where.releaseDate = {
         gte: new Date(`${yearFilter}-01-01T00:00:00.000Z`),
