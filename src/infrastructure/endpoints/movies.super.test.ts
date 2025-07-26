@@ -123,3 +123,63 @@ describe("GET /movies/search", () => {
     expect(res.body).toHaveProperty("error");
   });
 });
+
+describe("GET /movies/:id", () => {
+  const apiKey = Buffer.from("hello").toString("base64");
+
+  let existingId: number;
+
+  beforeAll(async () => {
+    await prisma.$connect();
+
+    const movie = await prisma.movie.findFirst();
+    if (!movie) throw new Error("No movies in DB to test with");
+
+    existingId = movie.id;
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
+  });
+
+  it("returns full movie details for a valid ID", async () => {
+    const res = await request(app)
+      .get(`/movies/${existingId}`)
+      .query({ api_key: apiKey });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({
+      title: expect.any(String),
+      releaseDate: expect.any(String),
+      overview: expect.any(String),
+      genres: expect.any(Array),
+      rating: expect.any(Number),
+      runtime: expect.any(Number),
+      language: expect.any(String),
+    });
+  });
+
+  it("returns 404 for an invalid/nonexistent ID", async () => {
+    const res = await request(app)
+      .get(`/movies/999999`)
+      .query({ api_key: apiKey });
+
+    expect(res.status).toBe(404);
+    expect(res.body).toHaveProperty("error");
+  });
+
+  it("returns 400 for a non-numeric ID", async () => {
+    const res = await request(app)
+      .get(`/movies/abc`)
+      .query({ api_key: apiKey });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("error");
+  });
+
+  it("returns 401 if API key is missing", async () => {
+    const res = await request(app).get(`/movies/${existingId}`);
+    expect(res.status).toBe(401);
+    expect(res.body).toHaveProperty("error");
+  });
+});
