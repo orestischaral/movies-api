@@ -126,9 +126,11 @@ Follows Onion/Clean Architecture for separation of concerns and testability.
 
 ## 👤 Author
 
-Orestis Charalampakos
-Backend Developer
-GitLab
+#### Orestis Charalampakos
+
+#### Backend Developer
+
+#### GitLab
 
 ### 🪪 License
 
