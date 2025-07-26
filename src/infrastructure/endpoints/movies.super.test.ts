@@ -1,14 +1,14 @@
 import request from "supertest";
 import app from "../../app";
 import { prisma } from "../../infrastructure/db/prismaDbConnector";
+import crypto from "crypto";
 
 describe("GET /movies/popular", () => {
-  const apiKey = Buffer.from("secret").toString("base64");
+  const apiKey = "secret";
+  const validHash = crypto.createHash("sha256").update(apiKey).digest("hex");
   beforeAll(async () => {
-    process.env.ENCODED_API_KEYS = Buffer.from("secret").toString("base64");
-    await prisma.$connect();
+    process.env.HASHED_API_KEYS = validHash;
   });
-
   afterAll(async () => {
     await prisma.$disconnect();
   });
@@ -48,10 +48,11 @@ describe("GET /movies/popular", () => {
 });
 
 describe("GET /movies/search", () => {
-  const apiKey = Buffer.from("secret").toString("base64");
+  const apiKey = "secret";
+  const validHash = crypto.createHash("sha256").update(apiKey).digest("hex");
 
   beforeAll(async () => {
-    process.env.ENCODED_API_KEYS = Buffer.from("secret").toString("base64");
+    process.env.HASHED_API_KEYS = validHash;
     await prisma.$connect();
   });
 
@@ -128,12 +129,13 @@ describe("GET /movies/search", () => {
 });
 
 describe("GET /movies/:id", () => {
-  const apiKey = Buffer.from("secret").toString("base64");
+  const apiKey = "secret";
+  const validHash = crypto.createHash("sha256").update(apiKey).digest("hex");
 
   let existingId: number;
 
   beforeAll(async () => {
-    process.env.ENCODED_API_KEYS = Buffer.from("secret").toString("base64");
+    process.env.HASHED_API_KEYS = validHash;
     await prisma.$connect();
 
     const movie = await prisma.movie.findFirst();
