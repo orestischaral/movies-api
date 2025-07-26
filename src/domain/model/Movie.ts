@@ -32,12 +32,4 @@ export class Movie {
     this.language = props.language;
     this.genres = props.genres;
   }
-
-  getFormattedReleaseYear(): string {
-    return this.releaseDate ? this.releaseDate.getFullYear().toString() : "N/A";
-  }
-
-  hasHighRating(): boolean {
-    return (this.rating ?? 0) >= 8.0;
-  }
 }
