@@ -5,6 +5,7 @@ import prisma from "../db/prismaDbConnector";
 import GetPopularMovies from "../../application/UseCases/getPopularMovies";
 import SearchMovies from "../../application/UseCases/searchMovies";
 import MovieRepository from "../repositories/movieRepository";
+import GetMovieByIdUseCase from "../../application/UseCases/getMovieByIdUseCase";
 const router = Router();
 
 // GET /movies/popular?page=1
@@ -35,6 +36,7 @@ router.get(
   })
 );
 
+// GET /movies/search?query=Movie&sort_by=rating&filter=year:2012
 router.get(
   "/search",
   ...withApiKeyProtection(async (req, res) => {
@@ -68,6 +70,35 @@ router.get(
         rating: m.rating,
       }))
     );
+  })
+);
+
+// GET /movies/:id
+router.get(
+  "/:id",
+  ...withApiKeyProtection(async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid movie ID" });
+    }
+
+    const useCase = new GetMovieByIdUseCase(new MovieRepository(prisma));
+    const movie = await useCase.execute(id);
+
+    if (!movie) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+
+    res.json({
+      title: movie.title,
+      releaseDate: movie.releaseDate,
+      fullPosterUrl: movie.fullPosterUrl,
+      overview: movie.overview,
+      genres: movie.genres,
+      rating: movie.rating,
+      runtime: movie.runtime,
+      language: movie.language,
+    });
   })
 );
 
