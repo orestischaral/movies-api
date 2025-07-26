@@ -10,4 +10,5 @@ export default interface IMovieRepository {
     skip?: number,
     take?: number
   ): Promise<Movie[]>;
+  getMovieById(id: number): Promise<Movie | null>;
 }
