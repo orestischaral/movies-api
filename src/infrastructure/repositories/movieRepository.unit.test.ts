@@ -48,3 +48,81 @@ describe("getPopularMovies", () => {
     );
   });
 });
+
+describe("searchMoviesInDb", () => {
+  const { prisma } = require("../db/__mocks__/prisma.ts");
+  const repo = new MovieRepository(prisma);
+
+  beforeEach(() => {
+    prisma.movie.findMany.mockReset();
+  });
+
+  it("should match by title (case-insensitive)", async () => {
+    prisma.movie.findMany.mockResolvedValue(mockData);
+
+    const results = await repo.searchMoviesInDb("Mock", "rating");
+
+    expect(results.length).toBe(1);
+    expect(prisma.movie.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          title: { contains: "Mock", mode: "insensitive" },
+        }),
+      })
+    );
+  });
+
+  it("should apply genre filter correctly", async () => {
+    prisma.movie.findMany.mockResolvedValue(mockData);
+
+    await repo.searchMoviesInDb("Mock", "rating", "Action");
+
+    expect(prisma.movie.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          genres: {
+            some: {
+              genre: {
+                name: {
+                  equals: "Action",
+                  mode: "insensitive",
+                },
+              },
+            },
+          },
+        }),
+      })
+    );
+  });
+
+  it("should apply year filter correctly", async () => {
+    prisma.movie.findMany.mockResolvedValue(mockData);
+
+    await repo.searchMoviesInDb("Mock", "release_date", undefined, "2020");
+
+    expect(prisma.movie.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          releaseDate: {
+            gte: new Date("2020-01-01T00:00:00.000Z"),
+            lte: new Date("2020-12-31T23:59:59.999Z"),
+          },
+        }),
+        orderBy: { releaseDate: "desc" },
+      })
+    );
+  });
+
+  it("should apply default skip and take", async () => {
+    prisma.movie.findMany.mockResolvedValue(mockData);
+
+    await repo.searchMoviesInDb("Mock", "rating");
+
+    expect(prisma.movie.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        skip: 0,
+        take: 10,
+      })
+    );
+  });
+});
