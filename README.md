@@ -94,7 +94,7 @@ npm run test
 src/
 ├── domain/         # Core models and interfaces
 ├── application/    # Use cases (business logic)
-├── infrastructure/ # Express, Prisma, API key middleware
+├── infrastructure/ # Express, Prisma, API key middleware, endpoints, repositories
 Follows Onion/Clean Architecture for separation of concerns and testability.
 ```
 
