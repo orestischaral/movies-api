@@ -3,7 +3,9 @@ import app from "../../app";
 import { prisma } from "../../infrastructure/db/prismaDbConnector";
 
 describe("GET /movies/popular", () => {
+  const apiKey = Buffer.from("secret").toString("base64");
   beforeAll(async () => {
+    process.env.ENCODED_API_KEYS = Buffer.from("secret").toString("base64");
     await prisma.$connect();
   });
 
@@ -12,9 +14,9 @@ describe("GET /movies/popular", () => {
   });
 
   it("should return a list of popular movies with expected fields", async () => {
-    const response = await request(app).get(
-      "/movies/popular?api_key=SG9sYQ==&page=1"
-    );
+    const response = await request(app)
+      .get("/movies/popular")
+      .query({ api_key: apiKey, page: 1 });
 
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
@@ -31,12 +33,12 @@ describe("GET /movies/popular", () => {
   });
 
   it("should respect pagination (page=2)", async () => {
-    const res1 = await request(app).get(
-      "/movies/popular?api_key=SG9sYQ==&page=1"
-    );
-    const res2 = await request(app).get(
-      "/movies/popular?api_key=SG9sYQ==&page=2"
-    );
+    const res1 = await request(app)
+      .get("/movies/popular")
+      .query({ api_key: apiKey, page: 1 });
+    const res2 = await request(app)
+      .get("/movies/popular")
+      .query({ api_key: apiKey, page: 2 });
 
     expect(res1.status).toBe(200);
     expect(res2.status).toBe(200);
@@ -46,9 +48,10 @@ describe("GET /movies/popular", () => {
 });
 
 describe("GET /movies/search", () => {
-  const apiKey = Buffer.from("hello").toString("base64");
+  const apiKey = Buffer.from("secret").toString("base64");
 
   beforeAll(async () => {
+    process.env.ENCODED_API_KEYS = Buffer.from("secret").toString("base64");
     await prisma.$connect();
   });
 
@@ -125,11 +128,12 @@ describe("GET /movies/search", () => {
 });
 
 describe("GET /movies/:id", () => {
-  const apiKey = Buffer.from("hello").toString("base64");
+  const apiKey = Buffer.from("secret").toString("base64");
 
   let existingId: number;
 
   beforeAll(async () => {
+    process.env.ENCODED_API_KEYS = Buffer.from("secret").toString("base64");
     await prisma.$connect();
 
     const movie = await prisma.movie.findFirst();
