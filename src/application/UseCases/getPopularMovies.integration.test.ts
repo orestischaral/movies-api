@@ -12,10 +12,11 @@ describe("Integration: getPopularMovies Use Case", () => {
     await prisma.$disconnect();
   });
 
+  const useCase = new GetPopularMovies(new MovieRepository(prisma));
   it("returns paginated movies ordered by rating desc", async () => {
     const page = 1;
     const pageSize = 10;
-    const useCase = new GetPopularMovies(new MovieRepository(prisma));
+
     const movies = await useCase.execute(page, pageSize);
 
     expect(Array.isArray(movies)).toBe(true);
