@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
+    "build": "bash prisma/utils/db-reset.sh && tsc",
     "start": "node dist/server.js",
     "test": "jest",
     "db-reset": "bash prisma/utils/db-reset.sh",
