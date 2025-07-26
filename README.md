@@ -72,15 +72,41 @@ Method Endpoint Description
 
 ### GET /movies/popular Top 50 movies (paginated)
 
+#### example
+
+```bash
+http://localhost:3000/movies/popular?api_key=your-secret
+http://localhost:3000/movies/popular?page=2&api_key=project-highCircl  (with pagination)
+```
+
 ### GET /movies/search Search by title, genre, year, rating
 
-🧾 Search Filters
-query=Movie (required)
-filter=genre:Action,year:2015
-sort_by=rating or release_date
-page=1
+#### 🧾 Search Filters
+
+```bash
+
+── query=Movie (required)
+── filter=genre:Action,year:2015
+── sort_by=rating or release_date
+── page=1
+```
+
+#### example
+
+```bash
+http://localhost:3000/movies/search?query=Star&api_key=your-secret
+http://localhost:3000/movies/search?query=Star&filter=genre:Action,year:2015&sort_by=rating&page=1&api_key=your-secret
+
+```
 
 ### GET /movies/:id Full details for one movie
+
+#### example
+
+```bash
+http://localhost:3000/movies/1?api_key=your-secret
+
+```
 
 ## 🧪 Testing the API
 
@@ -101,7 +127,7 @@ Follows Onion/Clean Architecture for separation of concerns and testability.
 ## 👤 Author
 
 Orestis Charalampakos
-Backend Developer | Clean Architecture Enthusiast
+Backend Developer
 GitLab
 
 ### 🪪 License
