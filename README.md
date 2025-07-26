@@ -75,8 +75,8 @@ Method Endpoint Description
 #### example
 
 ```bash
-http://localhost:3000/movies/popular?api_key=your-secret
-http://localhost:3000/movies/popular?page=2&api_key=project-highCircl  (with pagination)
+http://localhost:3000/movies/popular?api_key=your-raw-api-key
+http://localhost:3000/movies/popular?page=2&api_key=your-raw-api-key  (with pagination)
 ```
 
 ### GET /movies/search Search by title, genre, year, rating
@@ -94,8 +94,8 @@ http://localhost:3000/movies/popular?page=2&api_key=project-highCircl  (with pag
 #### example
 
 ```bash
-http://localhost:3000/movies/search?query=Star&api_key=your-secret
-http://localhost:3000/movies/search?query=Star&filter=genre:Action,year:2015&sort_by=rating&page=1&api_key=your-secret
+http://localhost:3000/movies/search?query=Star&api_key=your-raw-api-key
+http://localhost:3000/movies/search?query=Star&filter=genre:Action,year:2015&sort_by=rating&page=1&api_key=your-raw-api-key
 
 ```
 
@@ -104,7 +104,7 @@ http://localhost:3000/movies/search?query=Star&filter=genre:Action,year:2015&sor
 #### example
 
 ```bash
-http://localhost:3000/movies/1?api_key=your-secret
+http://localhost:3000/movies/1?api_key=your-raw-api-key
 
 ```
 
