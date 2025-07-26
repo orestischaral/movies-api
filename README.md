@@ -128,9 +128,7 @@ Follows Onion/Clean Architecture for separation of concerns and testability.
 
 #### Orestis Charalampakos
 
-#### Backend Developer
-
-#### GitLab
+Software Engineer
 
 ### 🪪 License
 
